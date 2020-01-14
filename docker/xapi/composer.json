@@ -1,6 +1,7 @@
 {
     "name": "mofa/moodle-logstore-xapi",
     "license": "GPL-3.0-only",
+	"description": "A Moodle plugin to send xAPI statements to an LRS using events in the Moodle logstore.",
     "require-dev": {
         "phpunit/phpunit": "~4.6",
         "learninglocker/statementfactory": "~0.0"
