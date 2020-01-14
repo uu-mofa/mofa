@@ -9,7 +9,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-
+    
+    - name: Install PHP
+      working-directory: docker/xapi
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: "7.1"
+        
+    - name: Check PHP Version
+      working-directory: docker/xapi
+      run: php -v
+        
     - name: Validate composer.json and composer.lock
       working-directory: docker/xapi
       run: composer validate
