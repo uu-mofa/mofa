@@ -1,0 +1,26 @@
+{
+  "$and": [
+    {
+      "$comment": "{\"criterionLabel\":\"A\",\"criteriaPath\":[\"statement\",\"verb\"]}",
+      "statement.verb.id": {
+        "$in": [
+          "{{create|escapejs}}",
+          "{{update|escapejs}}",
+          "{{delete|escapejs}}"
+        ]
+      },
+      "$comment": "{\"criterionLabel\":\"B\",\"criteriaPath\":[\"statement\",\"object\",\"definition\",\"type\"]}",
+      "statement.object.definition.type": {
+        "$in": [
+          "http://id.tincanapi.com/activitytype/lms/course",
+          "http://id.tincanapi.com/activitytype/lms/module",
+          "http://id.tincanapi.com/activitytype/chapter",
+          "http://id.tincanapi.com/activitytype/assign",
+          "http://id.tincanapi.com/activitytype/quiz",
+          "http://id.tincanapi.com/activitytype/choice",
+          "http://id.tincanapi.com/activitytype/book"
+        ]
+      }
+    }
+  ]
+}

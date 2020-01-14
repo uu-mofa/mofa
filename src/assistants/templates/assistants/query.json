@@ -1,0 +1,28 @@
+{
+  "$and": [
+    {
+      "$comment": "{\"criterionLabel\":\"A\",\"criteriaPath\":[\"statement\",\"verb\"]}",
+      "statement.verb.id": {
+        "$in": [
+          "{{event|escapejs}}"
+        ]
+      }
+    },
+    {
+      "$comment": "{\"criterionLabel\":\"B\",\"criteriaPath\":[\"statement\",\"object\"]}",
+      "statement.context.contextActivities.grouping.id": {
+        "$in": [
+          "http://localhost:4000/course/view.php?id={{course_id|escapejs}}"
+        ]
+      }
+    },
+    {
+      "$comment": "{\"criterionLabel\":\"C\",\"criteriaPath\":[\"statement\",\"context\",\"platform\"]}",
+      "statement.context.platform": {
+        "$in": [
+          "Moodle"
+        ]
+      }
+    }
+  ]
+}
