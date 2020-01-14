@@ -26,7 +26,9 @@ jobs:
       working-directory: src
       run: |
         pip install flake8
+        python -m flake8 src/
     - name: Test with Django tests
+      working-directory: src
       run: |
         python manage.py test
         python -m coverage run --source='.' manage.py test
