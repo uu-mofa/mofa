@@ -55,5 +55,5 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 autoapi_dirs = ['../../src']
-autoapi_ignore = ['*migrations*', '*tests*', '*mofa/*', '*manage.py']
+autoapi_ignore = ['*migrations*', '*tests*', '*src/mofa/*', '*manage.py']
 autoapi_template_dir = os.path.abspath('../_autoapi_templates')
