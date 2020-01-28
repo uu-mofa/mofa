@@ -1,0 +1,18 @@
+This program has been developed by students from the bachelor Computer Science at Utrecht University within the Software
+and Game project course ©Copyright Utrecht University (Department of Information and Computing Sciences).
+
+Developers:
+Nikita van den Berg
+Ivan Blekkenhorst
+Olivier Brahma
+Esmee Dekker
+Dzjon Hessing
+Luc Kelters
+Gerwin de Kruijf
+Jeroen Maassen
+Jeroen Vreugdenhil
+
+Supervisor:
+Nico Brand
+
+www.softwaregameprojecten.nl

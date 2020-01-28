@@ -1,0 +1,3 @@
+[submodule "docker/xapi"]
+	path = docker/xapi
+	url = https://github.com/uu-mofa/xapi.git

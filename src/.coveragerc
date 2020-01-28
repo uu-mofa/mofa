@@ -1,0 +1,9 @@
+[run]
+omit =
+    # Omit all migrations files
+    */migrations/*
+    # Omit automatically created Django files
+    mofa/wsgi.py
+    mofa/settings.py
+    manage.py
+    */tests/*

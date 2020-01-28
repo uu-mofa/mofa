@@ -1,0 +1,177 @@
+version: '2'
+services:
+
+    mongo:
+        image: mongo:3.4
+        restart: unless-stopped
+        volumes:
+            - "mongo:/data/db"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.2
+
+    redis:
+        image: redis:4-alpine
+        restart: unless-stopped
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.3
+
+    xapi:
+        image: learninglocker/xapi-service:2.1.10
+        restart: unless-stopped
+        environment:
+            - MONGO_URL=mongodb://mongo:27017/learninglocker_v2
+            - MONGO_DB=learninglocker_v2
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - mongo
+            - redis
+        volumes:
+            - "xapi-storage:/usr/src/app/storage"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.4    
+
+    api:
+        image: michzimny/learninglocker2-app:${DOCKER_TAG}
+        environment:
+            - DOMAIN_NAME
+            - APP_SECRET
+            - SMTP_HOST
+            - SMTP_PORT
+            - SMTP_SECURED
+            - SMTP_USER
+            - SMTP_PASS
+        command: "node api/dist/server"
+        restart: unless-stopped
+        depends_on:
+            - mongo
+            - redis
+        volumes:
+            - "app-storage:/opt/learninglocker/storage"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.5
+
+    ui:
+        image: michzimny/learninglocker2-app:${DOCKER_TAG}
+        environment:
+            - DOMAIN_NAME
+            - APP_SECRET
+            - SMTP_HOST
+            - SMTP_PORT
+            - SMTP_SECURED
+            - SMTP_USER
+            - SMTP_PASS
+        command: "./entrypoint-ui.sh"
+        restart: unless-stopped
+        depends_on:
+            - mongo
+            - redis
+            - api
+        volumes:
+            - "app-storage:/opt/learninglocker/storage"
+            - "ui-logs:/opt/learninglocker/logs"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.6
+
+    worker:
+        image: michzimny/learninglocker2-app:${DOCKER_TAG}
+        environment:
+            - DOMAIN_NAME
+            - APP_SECRET
+            - SMTP_HOST
+            - SMTP_PORT
+            - SMTP_SECURED
+            - SMTP_USER
+            - SMTP_PASS
+        command: "node worker/dist/server"
+        restart: unless-stopped
+        depends_on:
+            - mongo
+            - redis
+        volumes:
+            - "app-storage:/opt/learninglocker/storage"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.7
+
+    nginx:
+        image: michzimny/learninglocker2-nginx:${DOCKER_TAG}
+        environment:
+            - DOMAIN_NAME
+        restart: unless-stopped
+        depends_on:
+            - ui
+            - xapi
+        ports:
+            - "8011:443"
+            - "8001:80"
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.8
+
+    mariadb:
+        image: 'bitnami/mariadb:10.1'
+        environment:
+          - MARIADB_USER=bn_moodle
+          - MARIADB_DATABASE=bitnami_moodle
+          - ALLOW_EMPTY_PASSWORD=yes
+        volumes:
+          - 'mariadb_data:/bitnami'
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.9
+    moodle:
+        image: 'bitnami/moodle:3'
+        environment:
+          - MARIADB_HOST=mariadb
+          - MARIADB_PORT_NUMBER=3306
+          - MOODLE_DATABASE_USER=bn_moodle
+          - MOODLE_DATABASE_NAME=bitnami_moodle
+          - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+          - '8002:80'
+          - '8012:443'
+        volumes:
+          - 'moodle_data:/bitnami'
+        depends_on:
+          - mariadb
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.10
+    
+    dockerhost:
+        image: qoomon/docker-host
+        cap_add: [ 'NET_ADMIN', 'NET_RAW' ]
+        mem_limit: 8M
+        restart: on-failure
+        networks:
+          stingitnetwork:
+            ipv4_address: 172.30.0.11
+            
+networks:
+  stingitnetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.30.0.0/16
+        gateway: 172.30.0.1
+      
+volumes:
+  mongo:
+    driver: local
+  xapi-storage:
+    driver: local
+  app-storage:
+    driver: local
+  ui-logs:
+    driver: local
+  mariadb_data:
+    driver: local
+  moodle_data:
+    driver: local
+
